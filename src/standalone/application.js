@@ -35,6 +35,10 @@ export function createStandaloneApplication({
         // The search package takes it as plain data rather than importing it,
         // so it stays free of application state.
         presets: CITY_POIS,
+        // Bare city names ("Bogota") go to the most populous match; loaded on
+        // the first search, from GeoNames (src/data/local_data/world_cities/).
+        worldCities: () =>
+          import('../data/local_data/world_cities/cities.json'),
         ...geospatial,
         resolveApiKey: () => googleApiKey,
         signal: context.signal,

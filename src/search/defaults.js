@@ -7,15 +7,18 @@ import { createPhotonGeocoder } from '../keylessGeocoder.js';
 import { createCoordinateGeocoder } from './coordinateGeocoder.js';
 import { createPresetGeocoder } from './presetGeocoder.js';
 import { createAlpsGeocoder } from './alpsGeocoder.js';
+import { createWorldCitiesGeocoder } from './worldCitiesGeocoder.js';
 
 /**
- * Coordinates, bundled names and the unqualified Alps first — all offline —
+ * Coordinates, bundled names, bare names of cities with 100,000+ people and
+ * the unqualified Alps first — all offline —
  * then Google when configured, then keyless Photon, then the local Nominatim
  * route as a last resort. Transport stays local to setup.
  *
  * `presets` is the caller's bundled place data. It is passed in rather than
  * imported so this package keeps reading no application state; with none
- * supplied there is simply no bundled-name provider.
+ * supplied there is simply no bundled-name provider. `worldCities` likewise
+ * loads the caller's bundled city list on first use (see worldCitiesGeocoder.js).
  */
 export function createDefaultPlaceSearch({
   resolveApiKey,
@@ -24,6 +27,7 @@ export function createDefaultPlaceSearch({
   endpoints = {},
   providers = {},
   presets = null,
+  worldCities = null,
   geocoding = null,
 } = {}) {
   if (geocoding && geocoding.provider !== 'nominatim')
@@ -38,6 +42,9 @@ export function createDefaultPlaceSearch({
     providers: providers.geocode || [
       createCoordinateGeocoder(),
       ...(presets ? [createPresetGeocoder({ presets })] : []),
+      ...(worldCities
+        ? [createWorldCitiesGeocoder({ loadCities: worldCities })]
+        : []),
       createAlpsGeocoder(),
       ...(selected
         ? [selected]
