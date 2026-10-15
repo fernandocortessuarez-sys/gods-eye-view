@@ -25,7 +25,10 @@ test('the build serves every runtime file from installed packages', () => {
   assert.equal(imports.length, 8);
   for (const file of imports) {
     assert.ok(existsSync(file), file);
-    assert.ok(file.includes(`${path.sep}node_modules${path.sep}`), file);
+    assert.ok(
+      path.normalize(file).includes(`${path.sep}node_modules${path.sep}`),
+      file,
+    );
   }
   assert.doesNotMatch(source, /https?:/);
   assert.match(source, /export const litertRuntimes/);
