@@ -1,6 +1,7 @@
 import { createStandaloneCatalog } from './catalog.js';
 import { createStandalonePlaceSearch } from './placeSearch.js';
 import { CITY_POIS } from '../locations.js';
+import { loadWorldCities } from '../data/worldCities.js';
 import { createApplication } from '../app/application.js';
 import { createStandaloneScene } from './scene.js';
 import { createStandaloneControls } from './controls.js';
@@ -37,8 +38,7 @@ export function createStandaloneApplication({
         presets: CITY_POIS,
         // Bare city names ("Bogota") go to the most populous match; loaded on
         // the first search, from GeoNames (src/data/local_data/world_cities/).
-        worldCities: () =>
-          import('../data/local_data/world_cities/cities.json'),
+        worldCities: loadWorldCities,
         ...geospatial,
         resolveApiKey: () => googleApiKey,
         signal: context.signal,
