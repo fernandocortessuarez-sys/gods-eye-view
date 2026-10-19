@@ -317,6 +317,8 @@ GEV reads Codex's file credentials but does not write or refresh them. It checks
 
 For a live voice check, run `node scripts/qa-voice-auth.mjs http://127.0.0.1:4189 oauth microphone.wav` against your local dev server. Use a WAV with three seconds of leading silence followed by a short spoken reply request. Replace `oauth` with `api-key` to check the API-key path. The check verifies audio input, a completed spoken reply, usage, resource cleanup, and reconnect. It saves screenshots and credential-free results under `.gev-logs/voice-auth/`.
 
+> **No key? Run voice on this device.** Open the tray next to the mic and choose **ON-DEVICE**: Gemma 4, Moonshine and Kokoro run in the browser (WebGPU; current Chrome or Edge) after a one-time download, with no key and no per-use cost. The tray checks your hardware: 16 GB+ Apple Silicon works best with Gemma 4 12B (6 GB download); 8–16 GB with Gemma 4 E4B (3 GB). `?voice=local-web` is a shortcut.
+
 Click **GEV MIC**, grant the microphone, and just talk. This is more than a voice-controlled remote:
 
 - **🧠 It knows what it's looking at.** The agent pulls live scene context before answering — including coordinates, street names, active layers, and view scale. Ask _"what city is this?"_ mid-flight and it knows.

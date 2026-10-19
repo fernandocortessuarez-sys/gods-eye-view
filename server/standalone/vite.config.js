@@ -27,6 +27,7 @@ export default defineConfig(({ command, mode }) => {
     host: process.env.HOST,
     port: process.env.PORT,
     allowedHosts: resolveAllowedHosts(process.env.GEV_ALLOWED_HOSTS),
+    naturalVoice: process.env.GEV_NATURAL_VOICE,
     command,
   });
 });

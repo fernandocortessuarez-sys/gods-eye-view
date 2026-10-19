@@ -15,7 +15,8 @@ test('explicit build inputs preserve browser-only defines, plugin order and loop
   // The Host check runs before every other plugin's middleware.
   assert.equal(config.plugins[0].name, 'host-check');
   assert.equal(config.plugins[0].enforce, 'pre');
-  assert.equal(config.plugins[3], plugin);
+  assert.equal(config.plugins[3].name, 'gev-on-device-runtime');
+  assert.equal(config.plugins[4], plugin);
   assert.equal(config.server.host, 'localhost');
   assert.equal(config.server.port, 4173);
   assert.deepEqual(config.server.allowedHosts, ['localhost', '127.0.0.1']);
@@ -39,12 +40,19 @@ test('explicit build inputs preserve browser-only defines, plugin order and loop
     'import.meta.env.GOOGLE_MAPS_API_KEY': '"browser-fixture"',
     'import.meta.env.CESIUM_ION_TOKEN': '"ion-fixture"',
     'import.meta.env.MAPILLARY_CLIENT_TOKEN': '""',
+    'import.meta.env.GEV_NATURAL_VOICE': '""',
   });
   assert.equal(
     createBrowserViteConfig({ mapillaryToken: 'MLY|1|abc' }).define[
       'import.meta.env.MAPILLARY_CLIENT_TOKEN'
     ],
     '"MLY|1|abc"',
+  );
+  assert.equal(
+    createBrowserViteConfig({ naturalVoice: 'off' }).define[
+      'import.meta.env.GEV_NATURAL_VOICE'
+    ],
+    '"off"',
   );
   // A wildcard bind keeps the Host-header check; LAN names are explicit.
   for (const host of ['0.0.0.0', '::'])
@@ -75,7 +83,7 @@ test('build helper does not discover environment values or construct local provi
       undefined,
     );
     assert.deepEqual(
-      config.plugins.slice(3).map((plugin) => plugin.name),
+      config.plugins.slice(4).map((plugin) => plugin.name),
       ['embed-framing', 'panel-build'],
     );
   } finally {
@@ -89,7 +97,7 @@ test('root config retains existing named exports and standalone provider order',
     assert.equal(compatibility[name], value, name);
   const config = standaloneConfig({ mode: 'test' });
   assert.deepEqual(
-    config.plugins.slice(3, -4).map((plugin) => plugin.name),
+    config.plugins.slice(4, -4).map((plugin) => plugin.name),
     providers.localProviderPlugins().map((plugin) => plugin.name),
   );
   assert.equal(config.plugins.at(-5).name, 'gev-key-setup');

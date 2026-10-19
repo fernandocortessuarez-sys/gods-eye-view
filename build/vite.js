@@ -3,6 +3,10 @@ import cesium from 'vite-plugin-cesium';
 import { DEFAULT_ALLOWED_HOSTS, hostCheckPlugin } from './allowedHosts.js';
 import { embedFramingPlugin } from './embed-framing.js';
 import { panelBuildPlugin } from './panel.js';
+import {
+  onDeviceRuntimePlugin,
+  phonemizerLoaderPath,
+} from './onDeviceRuntime.js';
 
 /**
  * Content-Security-Policy for every document the dev/preview server serves.
@@ -57,6 +61,7 @@ export function createBrowserViteConfig({
   host = 'localhost',
   port = 4173,
   allowedHosts = DEFAULT_ALLOWED_HOSTS,
+  naturalVoice,
   command,
 } = {}) {
   return {
@@ -65,10 +70,17 @@ export function createBrowserViteConfig({
       hostCheckPlugin(),
       cesium(),
       applicationHtmlPlugin(),
+      onDeviceRuntimePlugin(),
       ...plugins,
       embedFramingPlugin(),
       panelBuildPlugin(),
     ],
+    // Workers are bundled separately and need the on-device runtime too.
+    worker: { plugins: () => [onDeviceRuntimePlugin()] },
+    // Also applied while pre-bundling kokoro-js for the dev server.
+    resolve: {
+      alias: [{ find: /^phonemizer$/, replacement: phonemizerLoaderPath() }],
+    },
     ...(publicDir === undefined ? {} : { publicDir }),
     // A production build must not clean the dependency cache a running dev
     // server is still serving optimized module URLs from.
@@ -84,6 +96,9 @@ export function createBrowserViteConfig({
         'egm96-universal',
         // Loaded on demand when the first street-level image opens.
         'mapillary-js',
+        '@litert-lm/core',
+        '@huggingface/transformers',
+        'kokoro-js',
       ],
     },
     server: {
@@ -112,6 +127,9 @@ export function createBrowserViteConfig({
       'import.meta.env.MAPILLARY_CLIENT_TOKEN': JSON.stringify(
         mapillaryToken ?? '',
       ),
+      // GEV_NATURAL_VOICE=off leaves natural (Kokoro) voice out of the
+      // on-device tier; replies use the browser's on-device voices or text.
+      'import.meta.env.GEV_NATURAL_VOICE': JSON.stringify(naturalVoice ?? ''),
     },
     build: { chunkSizeWarningLimit: 1500 },
   };

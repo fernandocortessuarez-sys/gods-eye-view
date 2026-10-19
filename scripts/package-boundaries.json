@@ -33,7 +33,8 @@
       "build/application-html.js",
       "build/allowedHosts.js",
       "build/embed-framing.js",
-      "build/panel.js"
+      "build/panel.js",
+      "build/onDeviceRuntime.js"
     ],
     "external": ["vite-plugin-cesium"]
   },
@@ -323,7 +324,7 @@
       "src/localRequestGate.mjs",
       "src/voice/actionSchemas.js",
       "src/voice/layerManifest.js",
-      "server/providers/openai/toolDescriptions.js",
+      "src/voice/actionDescriptions.js",
       "src/sources/rateLimit.js"
     ],
     "external": []
@@ -1430,7 +1431,12 @@
       "src/voice/narration.js",
       "src/voice/earcon.js",
       "src/voice/pointerContext.js",
-      "src/voice/pointerReticle.js"
+      "src/voice/pointerReticle.js",
+      "src/voice/voiceEngineControls.js",
+      "src/voice/voiceEnginePresentation.js",
+      "src/voice/local/modelCatalog.js",
+      "src/ui/chipGroup.js",
+      "src/ui/uiLifetime.js"
     ],
     "external": []
   },
@@ -2271,7 +2277,36 @@
       "src/app/layers/airQuality.js",
       "src/layers/airQuality/index.js",
       "src/layers/airQuality/model.js",
-      "src/layers/airQuality/source.js"
+      "src/layers/airQuality/source.js",
+      "src/voice/voiceEngine.js",
+      "src/voice/voiceEngineControls.js",
+      "src/voice/voiceEnginePresentation.js",
+      "src/voice/local/gemmaToolCalls.js",
+      "src/voice/local/localAudio.js",
+      "src/voice/local/localEngine.js",
+      "src/voice/local/localPrompt.js",
+      "src/voice/local/localVoiceControls.js",
+      "src/voice/local/localVoicePreferences.js",
+      "src/voice/local/localVoicePresentation.js",
+      "src/voice/local/localVoiceStore.js",
+      "src/voice/local/localWebSession.js",
+      "src/voice/local/modelCatalog.js",
+      "src/voice/local/replies.js",
+      "src/voice/local/speechText.js",
+      "src/voice/local/toolset.js",
+      "src/voice/local/workers/modelCache.js",
+      "src/voice/local/workers/runtimeAssets.js",
+      "src/voice/local/workers/phonemizerRuntime.js",
+      "src/voice/local/workerClient.js",
+      "src/voice/local/localWebProvider.js",
+      "src/voice/local/localWebFlag.js",
+      "src/voice/local/localRadio.js",
+      "src/voice/local/speechOutput.js",
+      "src/voice/local/streamTee.js",
+      "src/voice/local/sha256.js",
+      "src/voice/local/naturalVoiceSetting.js",
+      "src/ui/styles/local-voice.css",
+      "src/voice/actionDescriptions.js"
     ],
     "external": [
       "hls.js",
@@ -3101,7 +3136,12 @@
       "src/voice/referents.js",
       "src/voice/layerManifest.js",
       "src/voice/speech.js",
-      "src/voice/pointerReticle.js"
+      "src/voice/pointerReticle.js",
+      "src/voice/voiceEngineControls.js",
+      "src/voice/voiceEnginePresentation.js",
+      "src/voice/local/modelCatalog.js",
+      "src/ui/chipGroup.js",
+      "src/ui/uiLifetime.js"
     ],
     "external": []
   },
