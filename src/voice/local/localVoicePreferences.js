@@ -1,6 +1,7 @@
 import {
   DEFAULT_STT_ID,
   DEFAULT_TTS_ID,
+  MULTILINGUAL_STT_ID,
   findLlmModel,
   findSttModel,
   findTtsEngine,
@@ -53,13 +54,18 @@ function offeredTts(id, naturalVoice) {
  * then a model recommended for the reported device memory. Unknown ids fall
  * through, so a stale stored value can never select a missing model. When
  * the build leaves natural voice out, speech defaults to system voices.
+ * A non-English `language` (the browser's, passed by the caller) defaults to
+ * the multilingual recognizer and system voices: Moonshine and Kokoro are
+ * English-only.
  */
 export function readLocalVoiceSettings({
   search = globalThis.location?.search,
   storage,
   deviceMemoryGB = globalThis.navigator?.deviceMemory,
   naturalVoice = naturalVoiceAvailable(),
+  language = 'en',
 } = {}) {
+  const english = /^en(-|$)/i.test(String(language || 'en'));
   let params;
   try {
     params = new URLSearchParams(search || '');
@@ -73,11 +79,11 @@ export function readLocalVoiceSettings({
   const stt =
     findSttModel(params.get('voiceStt'))?.id ||
     findSttModel(read(storage, LOCAL_VOICE_STT_STORAGE_KEY))?.id ||
-    DEFAULT_STT_ID;
+    (english ? DEFAULT_STT_ID : MULTILINGUAL_STT_ID);
   const tts =
     offeredTts(params.get('voiceTts'), naturalVoice) ||
     offeredTts(read(storage, LOCAL_VOICE_TTS_STORAGE_KEY), naturalVoice) ||
-    (naturalVoice ? DEFAULT_TTS_ID : 'system');
+    (naturalVoice && english ? DEFAULT_TTS_ID : 'system');
   return { llm, stt, tts, naturalVoice };
 }
 

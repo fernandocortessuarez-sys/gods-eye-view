@@ -327,6 +327,8 @@ test('natural voice falls back to a system voice when it cannot load', async () 
       openMicrophone: async () => {
         throw new Error('no microphone in tests');
       },
+      // Node reports the machine's locale; English keeps Kokoro the default.
+      language: 'en-US',
     },
   });
   // No system voices in Node: the fallback ends at text only.
@@ -414,5 +416,32 @@ test('URL speech override and load verbs', () => {
     localVoiceTrayView({ ...base, phase: 'ready', storageNote: 'Low space' })
       .note,
     'Low space',
+  );
+});
+
+test('a non-English browser defaults to multilingual recognition and system voices', () => {
+  const spanish = readLocalVoiceSettings({
+    search: '',
+    storage: null,
+    deviceMemoryGB: 16,
+    language: 'es-CO',
+  });
+  assert.equal(spanish.stt, 'whisper-large-v3-turbo');
+  assert.equal(spanish.tts, 'system');
+  const english = readLocalVoiceSettings({
+    search: '',
+    storage: null,
+    deviceMemoryGB: 16,
+    language: 'en-GB',
+  });
+  assert.equal(english.stt, 'moonshine-base');
+  assert.equal(english.tts, 'kokoro');
+  // A stored choice still wins over the language default.
+  const storage = memoryStorage({
+    [LOCAL_VOICE_STT_STORAGE_KEY]: 'moonshine-base',
+  });
+  assert.equal(
+    readLocalVoiceSettings({ search: '', storage, language: 'es-CO' }).stt,
+    'moonshine-base',
   );
 });

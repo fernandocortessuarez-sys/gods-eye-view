@@ -115,6 +115,8 @@ export const TTS_ENGINES = Object.freeze([
 ]);
 
 export const DEFAULT_STT_ID = 'moonshine-base';
+/** Whisper detects the spoken language itself (about 99 languages). */
+export const MULTILINGUAL_STT_ID = 'whisper-large-v3-turbo';
 export const DEFAULT_TTS_ID = 'kokoro';
 
 export function findTtsEngine(id) {

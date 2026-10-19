@@ -80,8 +80,9 @@ export function createLocalWebSession({
     checkStorage = checkModelStorage,
     openMicrophone = createMicrophoneCapture,
     createOutput = null,
+    language = globalThis.navigator?.language || 'en-US',
   } = runtime;
-  const settings = readLocalVoiceSettings({ storage });
+  const settings = readLocalVoiceSettings({ storage, language });
   const store = createLocalVoiceStore({
     llm: settings.llm,
     stt: settings.stt,
@@ -165,7 +166,10 @@ export function createLocalWebSession({
       return createKokoroOutput({ client: engine.kokoro, ...speakerHooks });
     // Natural voice that could not load falls back to a system voice.
     if (ttsEngine === 'system' || ttsEngine === 'kokoro') {
-      const voice = pickOnDeviceVoice(await loadSystemVoices());
+      const voices = await loadSystemVoices();
+      // The browser language first, then any English voice.
+      const voice =
+        pickOnDeviceVoice(voices, language) || pickOnDeviceVoice(voices);
       if (voice) return createSystemOutput({ voice, ...speakerHooks });
       store.update({
         storageMessage: 'No on-device system voice; replies are text only.',
